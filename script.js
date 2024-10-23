@@ -1,13 +1,16 @@
 let flashcards = [];
 let currentIndex = 0;
 let queue = [];
+let showingAnswer = false;
 
 function addFlashcard() {
-    const input = document.getElementById("flashcard-input");
-    const content = input.value.trim();
-    if (content) {
-        flashcards.push(content);
-        input.value = "";
+    const question = document.getElementById("question-input").value.trim();
+    const answer = document.getElementById("answer-input").value.trim();
+    
+    if (question && answer) {
+        flashcards.push({ question, answer });
+        document.getElementById("question-input").value = "";
+        document.getElementById("answer-input").value = "";
         if (flashcards.length === 1) {
             showFlashcard();
         }
@@ -20,7 +23,18 @@ function showFlashcard() {
     } else if (currentIndex >= flashcards.length) {
         currentIndex = 0;
     }
-    document.getElementById("flashcard").innerText = flashcards[currentIndex] || "No flashcards";
+
+    const flashcard = flashcards[currentIndex];
+    document.getElementById("flashcard-question").innerText = flashcard.question;
+    document.getElementById("flashcard-answer").style.display = "none";
+    document.getElementById("flashcard-answer").innerText = flashcard.answer;
+    showingAnswer = false;
+    document.getElementById("show-answer-btn").style.display = "block";
+}
+
+function showAnswer() {
+    document.getElementById("flashcard-answer").style.display = "block";
+    document.getElementById("show-answer-btn").style.display = "none";
 }
 
 function rateFlashcard(feedback) {
@@ -38,9 +52,11 @@ function rateFlashcard(feedback) {
             queue.splice(2, 0, currentIndex);
             break;
     }
+
     if (flashcards.length > 0) {
         showFlashcard();
     } else {
-        document.getElementById("flashcard").innerText = "All flashcards completed!";
+        document.getElementById("flashcard-question").innerText = "All flashcards completed!";
+        document.getElementById("flashcard-answer").innerText = "";
     }
 }
